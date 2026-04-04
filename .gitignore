@@ -1,0 +1,86 @@
+# ===========================
+# WPILib / FRC Robot Project
+# ===========================
+
+# Gradle build outputs
+**/build/
+**/.gradle/
+**/gradle/wrapper/gradle-wrapper.jar
+
+# WPILib generated files
+**/.wpilib/
+**/simgui.json
+**/simgui-ds.json
+**/simulation/
+
+# WPILib vendor dependency cache (keep .json files, ignore extracted)
+**/vendordeps/*.meta
+
+# ===========================
+# Java / IDE
+# ===========================
+
+# Compiled class files
+*.class
+
+# VS Code
+.vscode/settings.json
+.vscode/launch.json
+*.code-workspace
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# ===========================
+# Operating System
+# ===========================
+
+# Windows
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Linux
+*~
+
+# ===========================
+# Large / Binary Files
+# Keep source files; skip exports/renders
+# ===========================
+
+# CAD exports that exceed GitHub's 100MB limit — store in Google Drive / Onshape
+# *.step     (uncomment if your STEP files are too large)
+# *.stp
+# *.iges
+# *.igs
+
+# Large videos
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# ===========================
+# Secrets / Credentials
+# (should never be in this repo)
+# ===========================
+.env
+.env.*
+*.pem
+*.key
+secrets/

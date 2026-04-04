@@ -1,0 +1,66 @@
+name: Bug Report
+description: Report a bug in robot code or electronics/controls
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: dropdown
+    id: subteam
+    attributes:
+      label: Subteam
+      options:
+        - Software
+        - Electrical
+        - Mechanical
+        - Drive Team
+    validations:
+      required: true
+
+  - type: dropdown
+    id: season
+    attributes:
+      label: Season / Year
+      options:
+        - "2026"
+        - "Other"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the bug clearly. What did you expect vs. what actually happened?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: subsystem
+    attributes:
+      label: Affected Subsystem
+      options:
+        - Drivetrain
+        - Shooter / Mechanism
+        - Intake
+        - Climber
+        - Autonomous
+        - Vision
+        - Operator Interface
+        - Electrical / Wiring
+        - Unknown
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to Reproduce
+      placeholder: |
+        1. Enable robot in Teleop
+        2. Press button X on controller
+        3. Observe...
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Driver Station Logs / Error Output
+      render: text

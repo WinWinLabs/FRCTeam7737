@@ -1,0 +1,60 @@
+name: Robot Code Build
+
+on:
+  push:
+    paths:
+      - '**/robot/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+    paths:
+      - '**/robot/**'
+      - '.github/workflows/build.yml'
+
+jobs:
+  build:
+    name: Build WPILib Robot Code
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        # Add more year directories here as seasons are added
+        year: ['2026']
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Cache Gradle packages
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ matrix.year }}-${{ hashFiles(format('{0}/robot/**/*.gradle*', matrix.year), format('{0}/robot/**/gradle-wrapper.properties', matrix.year)) }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ matrix.year }}-
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ${{ matrix.year }}/robot/gradlew
+        # Skip this step if robot/ doesn't exist yet for that year
+        continue-on-error: true
+
+      - name: Build with Gradle
+        working-directory: ${{ matrix.year }}/robot
+        run: ./gradlew build --no-daemon
+        continue-on-error: false
+
+      - name: Upload build artifacts (on failure)
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-failure-logs-${{ matrix.year }}
+          path: ${{ matrix.year }}/robot/build/reports/
+          retention-days: 7

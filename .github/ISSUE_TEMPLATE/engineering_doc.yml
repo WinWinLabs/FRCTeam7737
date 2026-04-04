@@ -1,0 +1,44 @@
+name: Mechanical / Electrical Document
+description: Submit or update a drawing, BOM, wiring diagram, or other engineering document
+title: "[DOC] "
+labels: ["documentation"]
+body:
+  - type: dropdown
+    id: doc_type
+    attributes:
+      label: Document Type
+      options:
+        - CAD / Engineering Drawing
+        - Wiring Diagram
+        - CAN Bus Map
+        - Bill of Materials (BOM)
+        - SOP (Standard Operating Procedure)
+        - Electrical Schematic
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: season
+    attributes:
+      label: Season / Year
+      options:
+        - "2026"
+        - "General / Cross-Year"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What is being added or changed?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reviewer
+    attributes:
+      label: Who reviewed this document for accuracy?
+      description: Name of the mentor or lead who verified the content.
+    validations:
+      required: true

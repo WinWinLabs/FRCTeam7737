@@ -1,0 +1,57 @@
+name: Feature / Task
+description: Request a new feature, improvement, or general task
+title: "[TASK] "
+labels: ["enhancement"]
+body:
+  - type: dropdown
+    id: subteam
+    attributes:
+      label: Subteam
+      options:
+        - Software
+        - Electrical
+        - Mechanical
+        - Drive Team
+        - Strategy
+        - Outreach
+        - Leadership
+    validations:
+      required: true
+
+  - type: dropdown
+    id: season
+    attributes:
+      label: Season / Year
+      options:
+        - "2026"
+        - "General / Cross-Year"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - High (competition blocker)
+        - Medium (important but not blocking)
+        - Low (nice to have)
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What needs to be done?
+      description: Be specific. Include why this matters.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: How do we know this is done?
+      placeholder: |
+        - [ ] Robot can score in autonomous
+        - [ ] Tested at least 5 times without failure
