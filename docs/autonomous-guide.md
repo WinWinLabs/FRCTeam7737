@@ -81,6 +81,8 @@ PPHolonomicDriveController drives the swerve to follow the path
 
 ## 3. Critical Bugs to Fix Before Autos Will Work
 
+> ⚠️ **These fixes have NOT yet been applied to the repository.** The values shown below are what the files currently contain (the broken state) and what they should contain after the fix is applied. These are pending follow-up changes.
+
 These are not tuning suggestions — they are bugs that will prevent the autonomous from driving correctly.
 
 ---
@@ -109,7 +111,7 @@ These are not tuning suggestions — they are bugs that will prevent the autonom
   `factor = 360 / steer_gear_ratio`  
   `factor = 360 / 21.43 = 16.8`
 
-**Corrected file:**
+**Suggested values (apply this fix):**
 ```json
 "conversionFactors": {
   "angle": { "gearRatio": 21.43, "factor": 16.8 },
@@ -330,26 +332,31 @@ In the PathPlanner GUI, drag the orange event marker pin to any point along a pa
 
 **File to edit:** [src/main/java/frc/robot/subsystems/swervedrive/SwerveSubsystem.java](../2026/Code/src/main/java/frc/robot/subsystems/swervedrive/SwerveSubsystem.java)
 
-Replace the vision-gated setup with unconditional vision initialization and a clean periodic update:
+The correct approach is to **stop the internal YAGSL odometry thread** and then manually call both `swerveDrive.updateOdometry()` and `vision.updatePoseEstimation()` in `periodic()`. This is exactly the pattern the existing `visionDriveTest` guard already implements — the fix is simply to make it unconditional.
+
+> **Why this matters:** YAGSL's background odometry thread continuously calls `updateOdometry()` on its own. If you also call `updateOdometry()` in `periodic()` without stopping the thread, odometry gets updated twice per cycle and measurements will be incorrect. You must call `stopOdometryThread()` first, then manage both updates yourself.
+
+Replace the vision-gated setup with unconditional vision initialization:
 
 ```java
-// In the constructor, after setupPathPlanner():
-// Remove:   if (visionDriveTest) { setupPhotonVision(); ... }
-// Add:
+// In the constructor, replace:
+//   if (visionDriveTest) { setupPhotonVision(); swerveDrive.stopOdometryThread(); }
+// With:
 vision = new Vision(swerveDrive::getPose, swerveDrive.field);
+swerveDrive.stopOdometryThread(); // Required — stops background thread so periodic() owns odometry
 ```
 
 ```java
 @Override
 public void periodic() {
-    // Always update odometry from wheel encoders
+    // Manually update odometry (background thread has been stopped above)
     swerveDrive.updateOdometry();
-    // Always fuse AprilTag vision measurements
+    // Fuse AprilTag vision measurements into the pose estimator
     vision.updatePoseEstimation(swerveDrive);
 }
 ```
 
-Also remove or ignore the `visionDriveTest` field — it is no longer needed.
+Also remove the `visionDriveTest` field — it is no longer needed.
 
 > **Note:** the first time you do this, test in simulation first. If the Limelight is not connected, `LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2` returns a pose with `tagCount == 0`, which `Vision.java` already guards against — so it is safe to call unconditionally.
 
