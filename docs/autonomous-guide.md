@@ -174,10 +174,12 @@ This file uses the old PathPlanner format (2023-era) with `anchorPoint`, `holono
 AprilTags are printed fiducial markers (like QR codes) placed around the 2026 Reefscape field at known, fixed positions. Every tag has a unique ID. The field layout for 2026 is stored in:
 
 ```java
-AprilTagFieldLayout fieldLayout = AprilTagFields.k2026RebuiltAndymark.loadAprilTagLayoutField();
+AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
 ```
 
 This is loaded in [Vision.java](../2026/Code/src/main/java/frc/robot/subsystems/swervedrive/Vision.java). It tells the robot exactly where every tag is on the field (position and orientation in 3D space).
+
+> **Note:** `AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark)` (the static factory method) is the form used by this robot's code. An older API style — `AprilTagFields.k2026RebuiltAndymark.loadAprilTagLayoutField()` — also exists but is not used here.
 
 ### How the Limelight reads them
 
